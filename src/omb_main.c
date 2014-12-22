@@ -201,7 +201,9 @@ int main(int argc, char *argv[])
 {
 	int is_rebooting = 0;
 	if (argc > 1 && getppid() > 1) {
+		omb_log(LOG_DEBUG, "argc > 1, before sysvinit");
 		omb_utils_sysvinit(NULL, argv[1]);
+		omb_log(LOG_DEBUG, "argc > 1, after sysvinit");
 	}
 	else {
 		omb_utils_init_system();
@@ -209,7 +211,9 @@ int main(int argc, char *argv[])
 		omb_device_item *items = NULL;
 		char *selected = NULL;
 		char *nextboot = NULL;
+		omb_log(LOG_DEBUG, "Before find_and_mount if");
 		if (omb_utils_find_and_mount() == OMB_SUCCESS) {
+			omb_log(LOG_DEBUG, "Inside find_and_mount if");
 			items = omb_utils_get_images();
 			omb_menu_set(items);
 			selected = omb_utils_read(OMB_SETTINGS_SELECTED);
@@ -220,11 +224,17 @@ int main(int argc, char *argv[])
 			omb_menu_set_selected(selected);
 			item = omb_menu_get_selected();
 		}
+		omb_log(LOG_DEBUG, "After find_and_mount if");
 
+		omb_log(LOG_DEBUG, "Before load modules");
 		omb_utils_load_modules(item);
+		omb_log(LOG_DEBUG, "After load modules");
 
 		int force = omb_utils_read_int(OMB_SETTINGS_FORCE);
+		omb_log(LOG_DEBUG, "Before !force and items if");
 		if (!force && items) {
+			omb_log(LOG_DEBUG, "Inside !force and items if");
+
 			omb_utils_update_background(item);
 			omb_utils_backup_kernel(item);
 
@@ -242,9 +252,13 @@ int main(int argc, char *argv[])
 		else {
 			omb_utils_save_int(OMB_SETTINGS_FORCE, 0);
 		}
+		omb_log(LOG_DEBUG, "After !force and items if");
+
 
 		item = omb_menu_get_selected();
+		omb_log(LOG_DEBUG, "Before selected if");
 		if (item && selected && strcmp(selected, item->identifier) != 0) {
+			omb_log(LOG_DEBUG, "Inside selected if");
 			omb_utils_restore_kernel(item);
 			omb_utils_save(OMB_SETTINGS_SELECTED, item->identifier);
 			omb_utils_save_int(OMB_SETTINGS_FORCE, 1);
@@ -253,17 +267,21 @@ int main(int argc, char *argv[])
 			is_rebooting = 1;
 		}
 		
+		omb_log(LOG_DEBUG, "Before !is rebooting if");
 		if (!is_rebooting) {
+			omb_log(LOG_DEBUG, "Inside !is rebooting if");
 			if (item != NULL && strcmp(item->identifier, "flash") != 0)
 				omb_utils_remount_media(item);
 			omb_utils_umount(OMB_MAIN_DIR);
 			omb_utils_sysvinit(item, NULL);
 		}
 
+		omb_log(LOG_DEBUG, "Before frees");
 		if (items) omb_utils_free_items(items);
 		if (selected) free(selected);
 	}
 
+	omb_log(LOG_DEBUG, "Before end of main");
 	return OMB_SUCCESS;
 }
 
