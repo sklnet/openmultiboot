@@ -60,6 +60,12 @@
 #define OMB_PYTHON_BIN "/usr/bin/python"
 #define OMB_BRANDING_HELPER_BIN "/sbin/open-multiboot-branding-helper.py"
 
+#define OMB_USTSLAVE_BIN "/usr/bin/ustslave"
+#define OMB_ST_VIDEO_ELF_DEVICE "/dev/st231-0"
+#define OMB_ST_AUDIO_ELF_DEVICE "/dev/st231-1"
+#define OMB_ST_VIDEO_ELF "/boot/video.elf"
+#define OMB_ST_AUDIO_ELF "/boot/audio.elf"
+
 #define OMB_MENU_ITEM_RADIUS 10
 #define OMB_MENU_ITEM_HEIGHT 80
 #define OMB_MENU_ITEM_WIDTH 800

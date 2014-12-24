@@ -340,7 +340,10 @@ void omb_utils_init_system()
 void omb_utils_load_modules(omb_device_item *item)
 {
 	int i;
-	
+
+	system("/usr/bin/ustslave /dev/st231-0 /boot/video.elf");
+	system("/usr/bin/ustslave /dev/st231-1 /boot/audio.elf");
+
 	omb_log(LOG_DEBUG, "load modules");
 	if (item == NULL || strcmp(item->identifier, "flash") == 0) {
 		system(OMB_MODUTILS_BIN);
